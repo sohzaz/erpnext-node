@@ -3,7 +3,6 @@
  */
 'use strict';
 const request = require('request');
-var querystring = require('querystring');
 const requestPromise = require('request-promise-native');
 
 function ERPNext(config) {
@@ -67,11 +66,11 @@ function ERPNext(config) {
                         console.log(JSON.stringify(params));
                         requestPromise.post({
                             url: urlString,
-                            json: false,
+                            json: true,
                             jar: self.cookieJar,
-                            body: 'data=' + querystring.escape(JSON.stringify(params)),
+                            body: params,
                             headers: {
-                                'Content-Type':'application/x-www-form-urlencoded',
+                                'Content-Type':'application/json',
                             }
                         }).then(res => {
                             resolve(res);
@@ -101,7 +100,22 @@ function ERPNext(config) {
 
             },
             update: (docName = "", data = {}) => {
-
+                return (new Promise((resolve, reject) => {
+                    self.login().then(() => {
+                        urlString += docName;
+                        requestPromise.put({
+                            url: urlString,
+                            json: true,
+                            jar: self.cookieJar,
+                            body: data,
+                            headers: {
+                                'Content-Type':'application/json',
+                            }
+                        })
+                            .then(res => resolve(res))
+                            .catch(err => reject(err))
+                    }).catch(err => reject(err))
+                }))
             },
             delete: (docName) => {
 
