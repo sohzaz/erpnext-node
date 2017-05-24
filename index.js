@@ -53,9 +53,10 @@ function ERPNext(config) {
                         console.log(urlString);
                         requestPromise.get({
                             url: urlString,
+                            json: true,
                             jar: self.cookieJar
                         }).then((res => {
-                            resolve(JSON.parse(res).data);
+                            resolve(res.data);
                         }))
                     })
                 }))
@@ -73,7 +74,7 @@ function ERPNext(config) {
                                 'Content-Type':'application/json',
                             }
                         }).then(res => {
-                            resolve(res);
+                            resolve(res.data);
                         }).catch(err => {
                             reject(err);
                         })
@@ -90,9 +91,10 @@ function ERPNext(config) {
                         console.log(urlString);
                         requestPromise.get({
                             url: urlString,
+                            json: true,
                             jar: self.cookieJar
                         }).then(res => {
-                            resolve(res);
+                            resolve(res.data);
                         })
                     });
 
