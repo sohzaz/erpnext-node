@@ -55,15 +55,15 @@ function ERPNext(config) {
                             url: urlString,
                             json: true,
                             jar: self.cookieJar
-                        }).then(res => resolve(res.data)
-                        ).catch(err => reject(err))
-                    })
+                        })
+                            .then(res => resolve(res.data))
+                            .catch(err => reject(err))
+                    }).catch(err => reject(err))
                 }))
             },
             create: (params = {}) => {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
-                        console.log(JSON.stringify(params));
                         requestPromise.post({
                             url: urlString,
                             json: true,
@@ -72,14 +72,10 @@ function ERPNext(config) {
                             headers: {
                                 'Content-Type':'application/json',
                             }
-                        }).then(res => {
-                            resolve(res.data);
-                        }).catch(err => {
-                            reject(err);
                         })
-                    }).catch(err => {
-                        reject(err)
-                    })
+                            .then(res => resolve(res.data))
+                            .catch(err => reject(err))
+                    }).catch(err => reject(err))
                 }))
 
             },
@@ -92,10 +88,10 @@ function ERPNext(config) {
                             url: urlString,
                             json: true,
                             jar: self.cookieJar
-                        }).then(res => {
-                            resolve(res.data);
                         })
-                    });
+                            .then(res => resolve(res.data))
+                            .catch(err => reject(err))
+                    }).catch(err => reject(err))
 
                 }))
 
