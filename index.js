@@ -20,6 +20,28 @@ function ERPNext(config) {
             form: formData,
         });
     };
+    this.call = function (method, data) {
+        return (new Promise((resolve, reject) => {
+            self.login().then(() => {
+                let urlString = self.host + '/api/method/' + method;
+                requestPromise.post({
+                    url: urlString,
+                    json: true,
+                    jar: self.cookieJar,
+                    form: data,
+                    headers: {
+                        'Content-Type':'application/json',
+                    }
+                })
+                    .then((res) => {
+                        resolve(res.message)
+                    })
+                    .catch(err => {
+                        reject(err);
+                    })
+            }).catch(err => reject(err))
+        }));
+    };
     this.resource = (docType) => {
         let urlString = self.host + '/api/resource/' + docType + '/';
         return {
@@ -56,8 +78,12 @@ function ERPNext(config) {
                             json: true,
                             jar: self.cookieJar
                         })
-                            .then(res => resolve(res.data))
-                            .catch(err => reject(err))
+                            .then((res) => {
+                                resolve(res.data)
+                            })
+                            .catch(err=> {
+                                reject(err);
+                            })
                     }).catch(err => reject(err))
                 }))
             },
@@ -73,8 +99,12 @@ function ERPNext(config) {
                                 'Content-Type':'application/json',
                             }
                         })
-                            .then(res => resolve(res.data))
-                            .catch(err => reject(err))
+                            .then((res) => {
+                                resolve(res.data)
+                            })
+                            .catch(err=> {
+                                reject(err);
+                            })
                     }).catch(err => reject(err))
                 }))
 
@@ -89,8 +119,12 @@ function ERPNext(config) {
                             json: true,
                             jar: self.cookieJar
                         })
-                            .then(res => resolve(res.data))
-                            .catch(err => reject(err))
+                            .then((res) => {
+                                resolve(res.data)
+                            })
+                            .catch(err=> {
+                                reject(err);
+                            })
                     }).catch(err => reject(err))
 
                 }))
@@ -109,12 +143,28 @@ function ERPNext(config) {
                                 'Content-Type':'application/json',
                             }
                         })
-                            .then(res => resolve(res))
-                            .catch(err => reject(err))
+                            .then((res) => {
+                                resolve(res)
+                            })
+                            .catch(err=> {
+                                reject(err);
+                            })
                     }).catch(err => reject(err))
                 }))
             },
             delete: (docName) => {
+
+            },
+            exists: (docName) => {
+                return (new Promise((resolve, reject) => {
+                    self.resource(docType).get(docName).then((res, err) => {
+                        if (!err)
+                            resolve({exists: true})
+                    }).catch(err => {
+                        resolve({exists: false})
+                    })
+
+                }));
 
             }
         }
