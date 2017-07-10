@@ -153,17 +153,37 @@ function ERPNext(config) {
                 }))
             },
             delete: (docName) => {
-
+                return (new Promise((resolve, reject) => {
+                    self.login().then(() => {
+                        urlString += docName;
+                        requestPromise.delete({
+                            url: urlString,
+                            json: true,
+                            jar: self.cookieJar,
+                            body: data,
+                            headers: {
+                                'Content-Type':'application/json',
+                            }
+                        })
+                            .then((res) => {
+                                resolve(res)
+                            })
+                            .catch(err=> {
+                                reject(err);
+                            })
+                    })
+                }))
             },
             exists: (docName) => {
                 return (new Promise((resolve, reject) => {
-                    self.resource(docType).get(docName).then((res, err) => {
-                        if (!err)
-                            resolve({exists: true})
-                    }).catch(err => {
-                        resolve({exists: false})
-                    })
-
+                    self.login().then(() => {
+                        self.resource(docType).get(docName).then((res, err) => {
+                            if (!err)
+                                resolve({exists: true})
+                        }).catch(err => {
+                            resolve({exists: false})
+                        })
+                    }).catch(err => reject(err))
                 }));
 
             }
