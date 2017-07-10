@@ -144,7 +144,7 @@ function ERPNext(config) {
                             }
                         })
                             .then((res) => {
-                                resolve(res)
+                                resolve(res.data)
                             })
                             .catch(err=> {
                                 reject(err);
@@ -160,7 +160,6 @@ function ERPNext(config) {
                             url: urlString,
                             json: true,
                             jar: self.cookieJar,
-                            body: data,
                             headers: {
                                 'Content-Type':'application/json',
                             }
