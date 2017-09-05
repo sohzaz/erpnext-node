@@ -72,7 +72,6 @@ function ERPNext(config) {
                                 urlString += '?';
                             urlString += 'limit_start=' + JSON.stringify(params.page_start);
                         }
-                        console.log(urlString);
                         requestPromise.get({
                             url: urlString,
                             json: true,
@@ -113,7 +112,6 @@ function ERPNext(config) {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
                         urlString += docName;
-                        console.log(urlString);
                         requestPromise.get({
                             url: urlString,
                             json: true,
