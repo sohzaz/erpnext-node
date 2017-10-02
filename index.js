@@ -24,7 +24,7 @@ function ERPNext(config) {
         return (new Promise((resolve, reject) => {
             self.login().then(() => {
                 let urlString = self.host + '/api/method/' + method;
-                requestPromise.post({
+                return requestPromise.post({
                     url: urlString,
                     json: true,
                     jar: self.cookieJar,
@@ -33,13 +33,10 @@ function ERPNext(config) {
                         'Content-Type':'application/json',
                     }
                 })
-                    .then((res) => {
-                        resolve(res.message)
-                    })
-                    .catch(err => {
-                        reject(err);
-                    })
-            }).catch(err => reject(err))
+
+            })
+                .then((res) => {resolve(res.message)})
+                .catch(err => {reject(err)})
         }));
     };
     this.resource = (docType) => {
@@ -57,7 +54,7 @@ function ERPNext(config) {
                             if (!params.fields)
                                 urlString += '?';
                             urlString += 'filters=' + JSON.stringify(params.filters);
-                            if (params.filters || params.page_length || params.page_start)
+                            if (params.page_length || params.page_start)
                                 urlString += '&';
                         }
                         if (params.page_length) {
@@ -72,24 +69,21 @@ function ERPNext(config) {
                                 urlString += '?';
                             urlString += 'limit_start=' + JSON.stringify(params.page_start);
                         }
-                        requestPromise.get({
+                        return requestPromise.get({
                             url: urlString,
                             json: true,
                             jar: self.cookieJar
                         })
-                            .then((res) => {
-                                resolve(res.data)
-                            })
-                            .catch(err=> {
-                                reject(err);
-                            })
-                    }).catch(err => reject(err))
+
+                    })
+                        .then((res) => {resolve(res.data)})
+                        .catch(err => reject(err))
                 }))
             },
             create: (params = {}) => {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
-                        requestPromise.post({
+                        return requestPromise.post({
                             url: urlString,
                             json: true,
                             jar: self.cookieJar,
@@ -98,13 +92,9 @@ function ERPNext(config) {
                                 'Content-Type':'application/json',
                             }
                         })
-                            .then((res) => {
-                                resolve(res.data)
-                            })
-                            .catch(err=> {
-                                reject(err);
-                            })
-                    }).catch(err => reject(err))
+                    })
+                        .then((res) => {resolve(res.data)})
+                        .catch(err => reject(err))
                 }))
 
             },
@@ -112,19 +102,14 @@ function ERPNext(config) {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
                         urlString += docName;
-                        requestPromise.get({
+                        return requestPromise.get({
                             url: urlString,
                             json: true,
                             jar: self.cookieJar
                         })
-                            .then((res) => {
-                                resolve(res.data)
-                            })
-                            .catch(err=> {
-                                reject(err);
-                            })
-                    }).catch(err => reject(err))
-
+                    })
+                        .then((res) => {resolve(res.data)})
+                        .catch(err => reject(err))
                 }))
 
             },
@@ -132,7 +117,7 @@ function ERPNext(config) {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
                         urlString += docName;
-                        requestPromise.put({
+                        return requestPromise.put({
                             url: urlString,
                             json: true,
                             jar: self.cookieJar,
@@ -141,20 +126,16 @@ function ERPNext(config) {
                                 'Content-Type':'application/json',
                             }
                         })
-                            .then((res) => {
-                                resolve(res.data)
-                            })
-                            .catch(err=> {
-                                reject(err);
-                            })
-                    }).catch(err => reject(err))
+                    }).then((res) => {
+                            resolve(res.data)
+                        }).catch(err => reject(err))
                 }))
             },
             delete: (docName) => {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
                         urlString += docName;
-                        requestPromise.delete({
+                        return requestPromise.delete({
                             url: urlString,
                             json: true,
                             jar: self.cookieJar,
@@ -162,12 +143,11 @@ function ERPNext(config) {
                                 'Content-Type':'application/json',
                             }
                         })
-                            .then((res) => {
-                                resolve(res)
-                            })
-                            .catch(err=> {
-                                reject(err);
-                            })
+
+                    }).then((res) => {
+                        resolve(res)
+                    }).catch(err=> {
+                        reject(err);
                     })
                 }))
             },
