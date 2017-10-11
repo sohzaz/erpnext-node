@@ -112,6 +112,33 @@ the resource object exposes those methods:
     | docname | String |
 
 
+## Exemples
+
+  * Create a Sales Invoice from a Sales Order
+
+  ```js
+  const salesOrderName = 'SO-test';
+  erp.call('erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice',
+        {source_name: salesOrderName})
+      .then(tmpInvoice => {
+            return erp.resource('Sales Invoice')
+                      .create(tmpInvoice)
+      })
+      .then(invoice => {
+        console.log(invoice)
+      })
+      .catch(err => {throw err})
+
+  ```
+
+  * Find all variants for a item template
+
+  ```js
+  erp.resource('Item')
+     .find({filters: [['variant_of', '=', 'item']]})
+     .then(res => {console.log(res)})
+     .catch(err => {throw err})
+  ```
 ## License (ISC)
 
 In case you never heard about the [ISC license](http://en.wikipedia.org/wiki/ISC_license) it is functionally equivalent to the MIT license.
