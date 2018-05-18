@@ -12,6 +12,12 @@ function ERPNext(config) {
     this.cookieJar = request.jar();
     let self = this;
 
+    this.buildUrlString = (params) => {
+        if (!Array.isArray(params))
+            throw "params must be an Array"
+        return this.host + "/api/" + params.join('/')
+    }
+
     this.login = function () {
         let formData = {usr: self.user, pwd: self.password};
         return requestPromise.post({
@@ -23,7 +29,7 @@ function ERPNext(config) {
     this.call = function (method, data) {
         return (new Promise((resolve, reject) => {
             self.login().then(() => {
-                let urlString = self.host + '/api/method/' + method;
+                const urlString = self.buildUrlString(['method', method])
                 return requestPromise.post({
                     url: urlString,
                     json: true,
@@ -40,10 +46,10 @@ function ERPNext(config) {
         }));
     };
     this.resource = (docType) => {
-        let urlString = self.host + '/api/resource/' + docType + '/';
         return {
             find: (params = {}) => {
                 return (new Promise((resolve, reject) => {
+                    let urlString = self.buildUrlString(['resource', docType])
                     self.login().then(() => {
                         if (params.fields) {
                             urlString += '?fields=' + JSON.stringify(params.fields);
@@ -82,6 +88,7 @@ function ERPNext(config) {
             },
             create: (params = {}) => {
                 return (new Promise((resolve, reject) => {
+                    let urlString = self.buildUrlString(['resource', docType])
                     self.login().then(() => {
                         return requestPromise.post({
                             url: urlString,
@@ -101,9 +108,8 @@ function ERPNext(config) {
             get: (docName = "") => {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
-                        urlString += docName;
                         return requestPromise.get({
-                            url: urlString,
+                            url: self.buildUrlString(['resource', docType,docName]),
                             json: true,
                             jar: self.cookieJar
                         })
@@ -116,9 +122,8 @@ function ERPNext(config) {
             update: (docName = "", data = {}) => {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
-                        urlString += docName;
                         return requestPromise.put({
-                            url: urlString,
+                            url: self.buildUrlString(['resource', docType,docName]),
                             json: true,
                             jar: self.cookieJar,
                             body: data,
@@ -127,16 +132,15 @@ function ERPNext(config) {
                             }
                         })
                     }).then((res) => {
-                            resolve(res.data)
-                        }).catch(err => reject(err))
+                        resolve(res.data)
+                    }).catch(err => reject(err))
                 }))
             },
             delete: (docName) => {
                 return (new Promise((resolve, reject) => {
                     self.login().then(() => {
-                        urlString += docName;
                         return requestPromise.delete({
-                            url: urlString,
+                            url: self.buildUrlString(['resource', docType,docName]),
                             json: true,
                             jar: self.cookieJar,
                             headers: {
